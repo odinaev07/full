@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт с меню</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Подключение CSS -->
+</head>
+<body>
+    <!-- Меню внизу -->
+    <div class="bottom-menu">
+        <ul>
+            <li><a href="5km.html">5 км</a></li>
+            <li><a href="moral.html">Мораль</a></li>
+            <li><a href="doroga.html">Дорога</a></li>
+            <li><a href="https://dxcalc.com/s1914">Кальк</a></li>
+            <li><a href="start.html">Альянсы</a></li>
+            <li><a href="igry.html">Общие</a></li>
+            <li><a href="conf.html">Конфликты</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+    <h1>Общие игры</h1>
+
+    <textarea id="inputData" rows="10" cols="50" placeholder="Введите тут общие игры, архивы тоже присутствуют!"></textarea><br>
+    <button class="buttons" onclick="compareGames()">Показать результат</button>
+
+    <div id="results"></div>
+
+    <script>
+        // Function to process data and compare games by gameID
+        function compareGames() {
+            const data = document.getElementById('inputData').value.trim().split('\n\n');
+            const gameToUsers = {};
+
+            data.forEach(userBlock => {
+                const lines = userBlock.trim().split('\n');
+                const userIdLine = lines[0];
+                const userId = userIdLine.match(/UserID (\d+)/)?.[1]; // Extract UserID
+
+                if (userId) {
+                    for (let i = 1; i < lines.length; i++) {
+                        const columns = lines[i].split('\t');
+                        if (columns.length > 1) {
+                            const gameId = columns[1].trim(); // Extract gameID (second column)
+                            if (gameId && !isNaN(gameId)) { // Ensure gameID is a number
+                                if (!gameToUsers[gameId]) {
+                                    gameToUsers[gameId] = new Set();
+                                }
+                                gameToUsers[gameId].add(userId);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Convert the gameToUsers object to an array of [gameID, users] pairs
+            const gameEntries = Object.entries(gameToUsers);
+
+            // Sort games by the number of users in descending order
+            gameEntries.sort((a, b) => b[1].size - a[1].size);
+
+            // Generate results
+            const resultDiv = document.getElementById('results');
+            resultDiv.innerHTML = '';
+
+            gameEntries.forEach(([gameId, users]) => {
+                if (users.size > 1) { // Only display games with more than one player
+                    resultDiv.innerHTML += `<p>Game ${gameId} is played by: ${[...users].join(', ')}</p>`;
+                }
+            });
+
+            if (resultDiv.innerHTML === '') {
+                resultDiv.innerHTML = '<p>No games with more than one player found.</p>';
+            }
+        }
+    </script>
+
+</body>
+</html>

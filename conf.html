@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт с меню</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Подключение CSS -->
+</head>
+<body>
+    <!-- Меню внизу -->
+    <div class="bottom-menu">
+        <ul>
+            <li><a href="5km.html">5 км</a></li>
+            <li><a href="moral.html">Мораль</a></li>
+            <li><a href="doroga.html">Дорога</a></li>
+            <li><a href="https://dxcalc.com/s1914">Кальк</a></li>
+            <li><a href="start.html">Альянсы</a></li>
+            <li><a href="igry.html">Общие</a></li>
+            <li><a href="conf.html">Конфликты</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+<h1>Конфликты</h1>
+
+<form id="jsonForm">
+    <textarea id="jsonInput" rows="10" cols="50" placeholder='Данные из 2 или 3 хгс'></textarea><br><br>
+    <button type="button" class="buttons" onclick="processData()">Показать результат</button>
+</form>
+
+<div id="tables"></div>
+
+<script>
+    function processData() {
+        const jsonInput = document.getElementById("jsonInput").value.trim();
+        let data = {};
+
+        if (!jsonInput) {
+            alert('Пожалуйста, вставьте данные в формате JSON!');
+            return;
+        }
+
+        try {
+            // Парсим введённый JSON
+            data = JSON.parse(jsonInput);
+        } catch (error) {
+            alert('Неправильный формат JSON! Убедитесь, что данные корректны.');
+            return;
+        }
+
+        // Извлекаем только нужные объекты
+        const users = extractValidUsers(data);
+        const allianceGroups = groupByAlliance(users);
+        displayResults(allianceGroups);
+    }
+
+    function extractValidUsers(data) {
+        let validUsers = [];
+
+        function recursiveExtract(obj) {
+            if (typeof obj === 'object' && obj !== null) {
+                if (obj["@c"] === "ultserver.UltUserLogin") {
+                    validUsers.push(obj);
+                }
+
+                for (const key in obj) {
+                    if (typeof obj[key] === 'object') {
+                        recursiveExtract(obj[key]);
+                    }
+                }
+            }
+        }
+
+        recursiveExtract(data);
+        return validUsers;
+    }
+
+    function groupByAlliance(users) {
+        const allianceGroups = {};
+        const noAllianceUsers = [];
+
+        for (const user of users) {
+            const allianceID = user.allianceID || "Без альянса";
+
+            if (allianceID === "Без альянса") {
+                noAllianceUsers.push(user);
+            } else {
+                if (!allianceGroups[allianceID]) {
+                    allianceGroups[allianceID] = [];
+                }
+                allianceGroups[allianceID].push(user);
+            }
+        }
+
+        // Убираем альянсы с одним участником и добавляем их в "Без альянса"
+        for (const allianceID in allianceGroups) {
+            if (allianceGroups[allianceID].length === 1) {
+                noAllianceUsers.push(...allianceGroups[allianceID]);
+                delete allianceGroups[allianceID];
+            }
+        }
+
+        return { allianceGroups, noAllianceUsers };
+    }
+
+    function displayResults({ allianceGroups, noAllianceUsers }) {
+        let tablesHTML = '';
+
+        // Создаем список альянсов с количеством участников
+        const sortedAlliances = Object.entries(allianceGroups)
+            .map(([allianceID, members]) => ({ allianceID, members }))
+            .sort((a, b) => b.members.length - a.members.length); // Сначала больше
+
+        // Формируем таблицы для каждого альянса
+        for (const { allianceID, members } of sortedAlliances) {
+            const userCount = members.length;
+
+            tablesHTML += `<div class="section">
+                <div class="toggle-table" onclick="toggleTable('${allianceID}')">
+                    Альянс ID: ${allianceID} - ${userCount} человек
+                </div>
+                <table id="table-${allianceID}">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('${allianceID}', 'login')">Логин</th>
+                            <th onclick="sortTable('${allianceID}', 'siteUserID')">ID</th>
+                            <th>team</th>
+                            <th>Email</th>
+                            <th>last IP</th>
+                            <th onclick="sortTable('${allianceID}', 'IPConflicts')">IP conf</th>
+                            <th onclick="sortTable('${allianceID}', 'softIPConflicts')">Soft IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            members.forEach(user => {
+                tablesHTML += `
+                    <tr>
+                        <td>${user.login}</td>
+                        <td>${user.siteUserID}</td> <!-- Изменено на siteUserID -->
+                        <td>${user.teamID}</td>
+                        <td>${user.email}</td>
+                        <td>${user.lastIP}</td>
+                        <td>${user.IPConflicts}</td>
+                        <td>${user.softIPConflicts}</td>
+                    </tr>`;
+            });
+
+            tablesHTML += `
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
+        // Добавляем "Без альянса" в таблицу
+        if (noAllianceUsers.length > 0) {
+            const displayAllianceID = "Без альянса";
+            tablesHTML += `<div class="section">
+                <div class="toggle-table" onclick="toggleTable('${displayAllianceID}')">
+                    Альянс ID: ${displayAllianceID} - ${noAllianceUsers.length} человек
+                </div>
+                <table id="table-${displayAllianceID}">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('${displayAllianceID}', 'login')">Логин</th>
+                            <th onclick="sortTable('${displayAllianceID}', 'siteUserID')">ID</th>
+                            <th>team</th>
+                            <th>Email</th>
+                            <th>last IP</th>
+                            <th onclick="sortTable('${displayAllianceID}', 'IPConflicts')">IP conf</th>
+                            <th onclick="sortTable('${displayAllianceID}', 'softIPConflicts')">Soft IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            noAllianceUsers.forEach(user => {
+                tablesHTML += `
+                    <tr>
+                        <td>${user.login}</td>
+                        <td>${user.siteUserID}</td> <!-- Изменено на siteUserID -->
+                        <td>${user.teamID}</td>
+                        <td>${user.email}</td>
+                        <td>${user.lastIP}</td>
+                        <td>${user.IPConflicts}</td>
+                        <td>${user.softIPConflicts}</td>
+                    </tr>`;
+            });
+
+            tablesHTML += `
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
+        // Обновляем содержимое div для таблиц
+        document.getElementById("tables").innerHTML = tablesHTML;
+
+        // Показать таблицы, если они были добавлены
+        if (sortedAlliances.length > 0 || noAllianceUsers.length > 0) {
+            document.querySelectorAll("table").forEach(table => {
+                table.style.display = 'none'; // Скрываем таблицы по умолчанию
+            });
+        }
+    }
+
+    function toggleTable(allianceID) {
+        const table = document.getElementById(`table-${allianceID}`);
+        table.style.display = table.style.display === 'none' || table.style.display === '' ? 'table' : 'none';
+    }
+
+    function sortTable(allianceID, column) {
+        const table = document.getElementById(`table-${allianceID}`);
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        const indexMap = {
+            login: 0,
+            siteUserID: 1,
+            teamID: 2,
+            email: 3,
+            lastIP: 4,
+            IPConflicts: 5,
+            softIPConflicts: 6,
+        };
+
+        const columnIndex = indexMap[column];
+        const isNumeric = column === 'IPConflicts' || column === 'softIPConflicts' || column === 'siteUserID';
+
+        // Сортируем строки
+        rows.sort((a, b) => {
+            const aValue = isNumeric ? parseInt(a.cells[columnIndex].innerText) : a.cells[columnIndex].innerText;
+            const bValue = isNumeric ? parseInt(b.cells[columnIndex].innerText) : b.cells[columnIndex].innerText;
+            return isNumeric ? bValue - aValue : aValue.localeCompare(bValue);
+        });
+
+        // Очищаем tbody и добавляем отсортированные строки
+        tbody.innerHTML = '';
+        rows.forEach(row => tbody.appendChild(row));
+    }
+</script>
+</body>
+</html>

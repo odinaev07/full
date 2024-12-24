@@ -1,0 +1,179 @@
+/* Общие стили для body */
+body {
+    margin: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    height: 100vh;
+    position: relative;
+}
+
+/* Fullscreen background with 50% dark overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('bg.png') no-repeat center center/cover;
+    background-repeat: no-repeat;
+    z-index: -2;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2); /* 50% black overlay */
+    z-index: -1;
+}
+
+/* Контейнер */
+.container {
+    width: 90%;
+    min-height: 85vh; /* Минимальная высота контейнера */
+    padding: 20px;
+    background: rgba(169, 169, 169, 0.9); 
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 2%; 
+    margin-bottom: 10%; 
+    box-sizing: border-box; 
+    text-align: center;
+    color: black; 
+}
+
+/* Дополнительные стили для текста */
+.container p {
+    font-size: 16px; 
+    line-height: 1.5; 
+}
+
+.container h1, .container h2, .container h3 {
+    font-weight: bold; 
+    margin-bottom: 10px; 
+}
+
+/* Меню внизу (вне контейнера) */
+.bottom-menu {
+    position: fixed; 
+    bottom: 0; 
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(169, 169, 169, 0.8); 
+    border-radius: 10px 10px 0 0; /* Округления сверху */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    padding: 5px;
+    text-align: center;
+    font-size: 14px; 
+    box-sizing: border-box;
+}
+
+/* Стили для списка меню */
+.bottom-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* Стили для каждого элемента списка */
+.bottom-menu ul li {
+    display: inline-block;
+    flex-basis: calc(14% - 1%);
+    margin-right: 1%; 
+}
+
+.bottom-menu ul li:last-child {
+    margin-right: 0;
+}
+
+/* Стили для ссылок в меню */
+.bottom-menu ul li a {
+    color: black;
+    text-decoration: none;
+    padding: 8px 10px; 
+    transition: 0.3s;
+    display: block;
+    text-align: center;
+}
+
+.bottom-menu ul li a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+
+#result {
+            
+            color: black !important;
+            padding: 1px;
+            margin-top: 1px;
+        }
+
+        table {
+            margin: 1px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 1px;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        textarea {
+            margin-top: 10px;
+        }
+
+.boby {
+display: flex;
+flex-direction: column;
+margin-top: 1%;
+font-size: 20px;
+}
+.dodi {
+text-align: center;
+items-align: center;
+}
+
+  .buttons {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .buttons:hover {
+    transform: scale(1.1);
+  }
+
+  .btn-arrival {
+    background-color: #4CAF50; /* Зеленая кнопка */
+    color: white;
+  }
+
+  .btn-info {
+    background-color: #008CBA; /* Голубая кнопка */
+    color: white;
+  }
+
+  .btn-warning {
+    background-color: #f44336; /* Красная кнопка */
+    color: white;
+  }
