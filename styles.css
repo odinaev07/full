@@ -110,46 +110,44 @@ body::after {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-
-
 #result {
-            
-            color: black !important;
-            padding: 1px;
-            margin-top: 1px;
-        }
+    color: black !important;
+    padding: 1px;
+    margin-top: 1px;
+}
 
-        table {
-            margin: 1px auto;
-            border-collapse: collapse;
-        }
+table {
+    margin: 1px auto;
+    border-collapse: collapse;
+}
 
-        th, td {
-            border: 1px solid black;
-            padding: 1px;
-            text-align: center;
-        }
+th, td {
+    border: 1px solid black;
+    padding: 1px;
+    text-align: center;
+}
 
-        form {
-            margin-top: 10px;
-        }
+form {
+    margin-top: 10px;
+}
 
-        textarea {
-            margin-top: 10px;
-        }
+textarea {
+    margin-top: 10px;
+}
 
 .boby {
-display: flex;
-flex-direction: column;
-margin-top: 1%;
-font-size: 20px;
-}
-.dodi {
-text-align: center;
-items-align: center;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1%;
+    font-size: 20px;
 }
 
-  .buttons {
+.dodi {
+    text-align: center;
+    items-align: center;
+}
+
+.buttons {
     padding: 10px 20px;
     margin: 10px;
     font-size: 16px;
@@ -157,23 +155,96 @@ items-align: center;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s, transform 0.2s;
-  }
+}
 
-  .buttons:hover {
+.buttons:hover {
     transform: scale(1.1);
-  }
+}
 
-  .btn-arrival {
+.btn-arrival {
     background-color: #4CAF50; /* Зеленая кнопка */
     color: white;
-  }
+}
 
-  .btn-info {
+.btn-info {
     background-color: #008CBA; /* Голубая кнопка */
     color: white;
-  }
+}
 
-  .btn-warning {
+.btn-warning {
     background-color: #f44336; /* Красная кнопка */
     color: white;
-  }
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    /* Уменьшаем размеры контейнера */
+    .container {
+        width: 95%;
+        min-height: 75vh; /* Уменьшаем минимальную высоту */
+    }
+
+    /* Изменяем шрифт для текста */
+    .container p {
+        font-size: 14px;
+    }
+
+    .container h1, .container h2, .container h3 {
+        font-size: 18px;
+    }
+
+    /* Меню внизу */
+    .bottom-menu {
+        width: 95%;
+        padding: 10px;
+    }
+
+    /* Уменьшаем размер кнопок в меню */
+    .bottom-menu ul li {
+        flex-basis: calc(33% - 1%); /* Больше места для каждого элемента */
+    }
+
+    /* Меньший размер кнопок */
+    .buttons {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}
+
+/* Адаптивность для очень маленьких экранов (например, телефоны) */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        width: 100%;
+        min-height: 60vh; /* Еще больше уменьшение контейнера */
+    }
+
+    /* Еще уменьшить шрифты */
+    .container p {
+        font-size: 12px;
+    }
+
+    .container h1, .container h2, .container h3 {
+        font-size: 16px;
+    }
+
+    /* Кнопки */
+    .buttons {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    /* Стили для меню */
+    .bottom-menu {
+        padding: 8px;
+    }
+
+    .bottom-menu ul li {
+        flex-basis: calc(50% - 1%); /* Делим меню на два элемента */
+    }
+
+    /* Меньшие отступы */
+    .boby {
+        font-size: 18px;
+    }
+}
